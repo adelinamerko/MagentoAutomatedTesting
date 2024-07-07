@@ -19,7 +19,7 @@ public class MagentoFullUserWorkflowTest {
     public MagentoFullUserWorkflowTest() {
         createAccountPage = new CreateAccountPage();
         myAccountPage = new MyAccountPage();
-        navigationBar = new NavigationBar();
+        navigationBar = NavigationBar.getNavigationBar();
         shoppingCartPage = new ShoppingCartPage();
     }
 
@@ -30,7 +30,7 @@ public class MagentoFullUserWorkflowTest {
         createAccountPage.createAccount(AccountDetails.getAccountDetails());
         assertEquals(createAccountPage.getPasswordStrengthMessage(), CreateAccountPage.STRONG_PASSWORD_MSG);
         createAccountPage.submitAccountDetails();
-        assertEquals(createAccountPage.getRegistrationConfirmationMessage(), CreateAccountPage.SUCCESSFUL_REGISTRATION_MSG);
+        assertEquals(myAccountPage.getRegistrationConfirmationMessage(), MyAccountPage.SUCCESSFUL_REGISTRATION_MSG);
 
         // 2- Assert Account Details
         assertEquals(myAccountPage.getAccountFullName(), AccountDetails.getAccountDetails().getFullName());
@@ -56,6 +56,9 @@ public class MagentoFullUserWorkflowTest {
         shoppingCartPage.updateProductQuantity(2, 4);
         shoppingCartPage.updateProductQuantity(3, 6);
         shoppingCartPage.clickUpdateCart();
+
+        // Extra step: Assert the shopping cart quantity in the navigation bar
+//        assertEquals(navigationBar.getShoppingCartQty(), navigationBar.getLocalShoppingCartQty());
 
         // 8- Assert cart total price
         assertEquals(shoppingCartPage.getSubtotalPrice(), shoppingCartPage.getCalculatedProductsTotalPrice());

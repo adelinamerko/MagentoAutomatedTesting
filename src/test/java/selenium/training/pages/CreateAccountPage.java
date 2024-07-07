@@ -8,17 +8,12 @@ import selenium.training.utils.Wait;
 
 public class CreateAccountPage extends BasePage {
 
-    public static final String SUCCESSFUL_REGISTRATION_MSG = "Thank you for registering with Main Website Store.";
     public static final String STRONG_PASSWORD_MSG = "Very Strong";
 
     private final NavigationBar navigationBar;
 
-    public CreateAccountPage() {
-        super();
-        this.navigationBar = new NavigationBar();
-    }
-
-    @FindBy(css= "form.create.account.form-create-account")
+    //region WebElements
+    @FindBy(css = "form.create.account.form-create-account")
     private WebElement frmCreateAccount;
 
     @FindBy(id = "firstname")
@@ -36,7 +31,7 @@ public class CreateAccountPage extends BasePage {
     @FindBy(id = "password-confirmation")
     private WebElement txtConfirmPassword;
 
-    @FindBy(id="password-strength-meter-label")
+    @FindBy(id = "password-strength-meter-label")
     private WebElement passwordStrengthMessage;
 
     @FindBy(css = "button[title='Create an Account']")
@@ -44,8 +39,12 @@ public class CreateAccountPage extends BasePage {
 
     @FindBy(css = "div[data-bind='html: $parent.prepareMessageForHtml(message.text)']")
     private WebElement registrationConfirmationMessage;
+    //endregion
 
-
+    public CreateAccountPage() {
+        super();
+        this.navigationBar = NavigationBar.getNavigationBar();
+    }
 
     public void fillAccountDetails(String name, String lastName, String email, String psw, String confirmPsw) {
         // Let's wait for the form to be visible, so we do not have to wait for each field
@@ -79,11 +78,6 @@ public class CreateAccountPage extends BasePage {
     public void navigateToCreateAccountPage() {
         navigationBar.navigateToHomePage();
         navigationBar.navigateToCreateAccountPage();
-    }
-
-    public String getRegistrationConfirmationMessage() {
-        Wait.getWait().until(ExpectedConditions.visibilityOf(registrationConfirmationMessage));
-        return registrationConfirmationMessage.getText();
     }
 
     public String getPasswordStrengthMessage() {

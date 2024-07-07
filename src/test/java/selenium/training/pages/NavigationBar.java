@@ -1,9 +1,7 @@
 package selenium.training.pages;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import selenium.training.utils.Driver;
 import selenium.training.utils.GlobalConfigs;
@@ -11,6 +9,7 @@ import selenium.training.utils.Wait;
 
 public class NavigationBar extends BasePage {
 
+    //region WebElements
     @FindBy(css = "div.panel.header ul.header.links li a[href='https://magento.softwaretestingboard.com/customer/account/create/']")
     private WebElement lnkCreateAccount;
 
@@ -28,21 +27,22 @@ public class NavigationBar extends BasePage {
 
     @FindBy(css = "a.action.viewcart")
     private WebElement btnViewEditCart;
+    //endregion
 
-    private int shoppingCartQty;
+    private int localShoppingCartQty;
 
-    public NavigationBar() {
+    private static NavigationBar navigationBar;
+
+    private NavigationBar() {
         super();
-        shoppingCartQty = 0;
+        this.localShoppingCartQty = 0;
     }
 
-    // @TODO: Add NavBar WebElements such as <products> dropdowns
-
-    public SearchResultsPage performSearch(String productName) {
-        Wait.getWait().until(ExpectedConditions.visibilityOf(search));
-        search.sendKeys(productName);
-        searchButton.click();
-        return new SearchResultsPage(productName);
+    public static NavigationBar getNavigationBar() {
+        if (navigationBar == null) {
+            navigationBar = new NavigationBar();
+        }
+        return navigationBar;
     }
 
     public void navigateToCreateAccountPage() {
@@ -62,8 +62,16 @@ public class NavigationBar extends BasePage {
         btnViewEditCart.click();
     }
 
+    public void increaseShoppingCartQty() {
+        increaseShoppingCartQty(1);
+    }
+
+    public void increaseShoppingCartQty(int qty) {
+        this.localShoppingCartQty += qty;
+    }
+
     public int getShoppingCartQty() {
-        Wait.getWait().until(ExpectedConditions.textToBePresentInElement(txtShoppingCartQty, String.valueOf(shoppingCartQty)));
+        Wait.getWait().until(ExpectedConditions.textToBePresentInElement(txtShoppingCartQty, String.valueOf(localShoppingCartQty)));
         // Get inner HTML
         String innerHTML = txtShoppingCartQty.getAttribute("innerHTML");
         // Remove comments <!-- ... -->
@@ -71,15 +79,19 @@ public class NavigationBar extends BasePage {
         // Extract the number
         String numberStr = cleanHTML.trim(); // This should be "0" based on your example
         // Parse the number as an integer
+//        System.out.println("XXX - NUMBER: " + numberStr);
         return Integer.parseInt(numberStr);
     }
 
-    public void incrementShoppingCartQty() {
-        this.shoppingCartQty++;
-    }
-
     public int getLocalShoppingCartQty() {
-        return shoppingCartQty;
+        System.out.println("XXX - LOCAL SHOPPING CART QTY: " + this.localShoppingCartQty);
+        return this.localShoppingCartQty;
     }
 
+    public SearchResultsPage performSearch(String productName) {
+        Wait.getWait().until(ExpectedConditions.visibilityOf(search));
+        search.sendKeys(productName);
+        searchButton.click();
+        return new SearchResultsPage(productName);
+    }
 }

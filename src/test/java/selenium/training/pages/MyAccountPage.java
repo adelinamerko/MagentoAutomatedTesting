@@ -9,8 +9,15 @@ import selenium.training.utils.Wait;
 
 public class MyAccountPage extends BasePage {
 
+    public static final String SUCCESSFUL_REGISTRATION_MSG = "Thank you for registering with Main Website Store.";
+
+    //region WebElements
     @FindBy(css = "div.box-content > p")
     private WebElement accountInfo;
+
+    @FindBy(css = "div[data-bind='html: $parent.prepareMessageForHtml(message.text)']")
+    private WebElement registrationConfirmationMessage;
+    //endregion
 
     public String getAccountFullName() {
         return getAccountInfo(AccountInfo.FULL_NAME);
@@ -18,6 +25,11 @@ public class MyAccountPage extends BasePage {
 
     public String getAccountEmail() {
         return getAccountInfo(AccountInfo.EMAIL);
+    }
+
+    public String getRegistrationConfirmationMessage() {
+        Wait.getWait().until(ExpectedConditions.visibilityOf(registrationConfirmationMessage));
+        return registrationConfirmationMessage.getText();
     }
 
     private String getAccountInfo(AccountInfo accountInfoElement) {

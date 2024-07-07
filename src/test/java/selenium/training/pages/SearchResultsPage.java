@@ -11,24 +11,30 @@ import selenium.training.utils.Driver;
 import selenium.training.utils.Wait;
 
 public class SearchResultsPage extends BasePage {
+
+    //region Constants
     private static final String ADDED_TO_CART_MESSAGE = "You added %s to your shopping cart.";
     private static final String productDetailsSelector = "div.product-item-info > div.product.details.product-item-details";
     private static final String productTitleSelector = productDetailsSelector + " > strong > a";
+    //endregion
+
     private String expectedPageTitleTemplate = "Search results for: '%s'";
     private final String searchQuery;
     private final NavigationBar navigationBar;
 
+    //region WebElements
     @FindBy(css = "div[data-bind='html: $parent.prepareMessageForHtml(message.text)']")
     private WebElement addedToCartConfirmationMessage;
 
     @FindBy(css = "h1.page-title > span.base")
     private WebElement pageTitleEl;
+    //endregion
 
     public SearchResultsPage(String searchQuery) {
         super();
         this.searchQuery = searchQuery;
         this.expectedPageTitleTemplate = String.format(expectedPageTitleTemplate, searchQuery);
-        this.navigationBar = new NavigationBar();
+        this.navigationBar = NavigationBar.getNavigationBar();
     }
 
     public boolean addProductToCart(int elementIndex, ClothesSize size, ClothesColor color) {
@@ -60,7 +66,7 @@ public class SearchResultsPage extends BasePage {
         Wait.getWait().until(ExpectedConditions.elementToBeClickable(btnAddToCart));
         btnAddToCart.click();
 
-        navigationBar.incrementShoppingCartQty();
+        navigationBar.increaseShoppingCartQty();
 
         // Validate the product was added to the cart
         return getAddedToCartConfirmationMessage(productTitle).equals(String.format(ADDED_TO_CART_MESSAGE, productTitle))
